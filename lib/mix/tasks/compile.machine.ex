@@ -43,8 +43,11 @@ defmodule Mix.Tasks.Compile.Machine do
     output = option(args, config, :output, "report.json")
     IO.inspect(output, label: "output (compile.machine.ex:44)")
     format = option(args, config, :format, "sarif")
+    IO.inspect(format, label: "format (compile.machine.ex:46)")
     pretty = option(args, config, :pretty, false)
+    IO.inspect(pretty, label: "pretty (compile.machine.ex:48)")
     root = Path.expand(option(args, config, :root, File.cwd!()))
+    IO.inspect(root, label: "root (compile.machine.ex:50)")
 
     formatter =
       case format(format) do
@@ -52,13 +55,19 @@ defmodule Mix.Tasks.Compile.Machine do
         _ -> Mix.raise("Unknown format #{format}", exit_status: 2)
       end
 
+    IO.inspect(formatter, label: "formatter (compile.machine.ex:57)")
+
     {status, diagnostics} =
       case Mix.Task.run("compile", argv) do
         {_, _} = result -> result
         status -> {status, []}
       end
 
+    IO.inspect(status, label: "status (compile.machine.ex:64)")
+    IO.inspect(diagnostics, label: "diagnostics (compile.machine.ex:65)")
+
     IO.puts("about to write")
+
     File.write!(
       output,
       formatter.render(diagnostics, %{
@@ -66,11 +75,16 @@ defmodule Mix.Tasks.Compile.Machine do
         root: root
       })
     )
-    IO.puts("wrote to #{inspect output}")
+
+    IO.puts("wrote to #{inspect(output)}")
+
     File.ls!()
     |> IO.inspect(label: "ls (compile.machine.ex:74)")
 
     {status, diagnostics}
+  rescue
+    e ->
+      IO.inspect(e, label: "error (compile.machine.ex:82)")
   end
 
   defp format(name) do
