@@ -67,6 +67,8 @@ defmodule Mix.Tasks.Compile.Machine do
       })
     )
     IO.puts("wrote to #{inspect output}")
+    File.ls!()
+    |> IO.inspect(label: "ls (compile.machine.ex:74)")
 
     {status, diagnostics}
   end
