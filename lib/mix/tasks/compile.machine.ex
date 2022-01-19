@@ -35,11 +35,13 @@ defmodule Mix.Tasks.Compile.Machine do
 
   @impl true
   def run(argv) do
+    IO.puts("mix compile.machine running")
     {args, _, _} = OptionParser.parse(argv, @opts)
     project_config = Mix.Project.config()
     config = Keyword.get(project_config, :machine, [])
 
     output = option(args, config, :output, "report.json")
+    IO.inspect(output, label: "output (compile.machine.ex:44)")
     format = option(args, config, :format, "sarif")
     pretty = option(args, config, :pretty, false)
     root = Path.expand(option(args, config, :root, File.cwd!()))
@@ -56,6 +58,7 @@ defmodule Mix.Tasks.Compile.Machine do
         status -> {status, []}
       end
 
+    IO.puts("about to write")
     File.write!(
       output,
       formatter.render(diagnostics, %{
@@ -63,6 +66,7 @@ defmodule Mix.Tasks.Compile.Machine do
         root: root
       })
     )
+    IO.puts("wrote to #{inspect output}")
 
     {status, diagnostics}
   end
